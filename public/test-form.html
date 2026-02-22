@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test FormBuilder Controller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 FormBuilder Controller Test Page</h1>
+    <p><strong>Server Status:</strong> <span id="serverStatus">Checking...</span></p>
+
+    <!-- Test 1: Controller Setup -->
+    <div class="test-section">
+        <h2>Test 1: Controller Setup</h2>
+        <p>Verify that all classes and routes are properly configured.</p>
+        <button onclick="testSetup()">Run Setup Test</button>
+        <div id="setupResult" class="result" style="display:none;"></div>
+    </div>
+
+    <!-- Test 2: Clear Chat -->
+    <div class="test-section">
+        <h2>Test 2: Clear Chat Session</h2>
+        <p>Test the clearChat() method. <strong>Note:</strong> You must be logged in.</p>
+        <button onclick="testClearChat()">Test Clear Chat</button>
+        <div id="clearChatResult" class="result" style="display:none;"></div>
+    </div>
+
+    <!-- Test 3: Routes List -->
+    <div class="test-section">
+        <h2>Test 3: Available Routes</h2>
+        <p>All FormBuilder routes:</p>
+        <ul>
+            <li><strong>GET</strong> /builder → builder.index</li>
+            <li><strong>POST</strong> /builder/generate → builder.generate (requires auth + rate limit)</li>
+            <li><strong>POST</strong> /builder/store → builder.store (requires auth)</li>
+            <li><strong>POST</strong> /builder/clear-chat → builder.clearChat (requires auth)</li>
+        </ul>
+    </div>
+
+    <!-- Instructions -->
+    <div class="test-section">
+        <h2>📋 Testing Instructions</h2>
+        <ol>
+            <li><strong>Run Setup Test:</strong> Click "Run Setup Test" to verify all classes exist</li>
+            <li><strong>Login Required:</strong> For generate/store/clearChat tests, you must be logged in</li>
+            <li><strong>Manual Testing:</strong>
+                <ul>
+                    <li>Visit <a href="/builder" target="_blank">/builder</a> to test the index() method</li>
+                    <li>Use the actual form builder UI to test generate() and store()</li>
+                    <li>Or use Postman/curl to make POST requests with CSRF token</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        // Check server status
+        fetch('/test-controller')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('serverStatus').innerHTML = 
+                    data.all_passed ? '✅ All checks passed!' : '⚠️ Some checks failed';
+            })
+            .catch(() => {
+                document.getElementById('serverStatus').innerHTML = '❌ Server not responding';
+            });
+
+        function testSetup() {
+            const resultDiv = document.getElementById('setupResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '⏳ Testing...';
+            resultDiv.className = 'result';
+
+            fetch('/test-controller')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.className = 'result ' + (data.all_passed ? 'success' : 'error');
+                    resultDiv.innerHTML = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = 'Error: ' + error.message;
+                });
+        }
+
+        function testClearChat() {
+            const resultDiv = document.getElementById('clearChatResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '⏳ Testing...';
+            resultDiv.className = 'result';
+
+            // Get CSRF token from meta tag (if exists)
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+            fetch('/builder/clear-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.className = 'result ' + (data.success ? 'success' : 'error');
+                resultDiv.innerHTML = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = 'Error: ' + error.message + '\n\n⚠️ This usually means you need to be logged in first!\n\nGo to /login and create an account, then come back to this page.';
+            });
+        }
+    </script>
+</body>
+</html>
