@@ -3,6 +3,8 @@
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormBuilderController;
+use App\Http\Controllers\FormController;
+use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\ProfileController;
 use App\Services\GeminiService;
 use Illuminate\Support\Facades\Route;
@@ -90,6 +92,11 @@ Route::middleware('auth')->group(function () {
         ->name('builder.generate');
     Route::post('/builder/store', [FormBuilderController::class, 'store'])->name('builder.store');
     Route::post('/builder/clear-chat', [FormBuilderController::class, 'clearChat'])->name('builder.clearChat');
+    
+    // Form Management routes
+    Route::delete('/forms/{form}', [FormController::class, 'destroy'])->name('forms.destroy');
+    Route::patch('/forms/{form}/toggle', [FormController::class, 'toggle'])->name('forms.toggle');
+    Route::get('/forms/{form}/submissions', [SubmissionController::class, 'index'])->name('forms.submissions');
     
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Submission extends Model
+{
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'form_id',
+        'data',
+        'ip_address',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'data' => 'array',
+    ];
+
+    /**
+     * Get the form that owns the submission.
+     */
+    public function form(): BelongsTo
+    {
+        return $this->belongsTo(Form::class);
+    }
+}
