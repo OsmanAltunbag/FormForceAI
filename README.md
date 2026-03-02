@@ -1,27 +1,55 @@
-FormForce AI 🤖
+# FormForce AI 🤖
 
-AI-powered form builder — describe a form in plain language, get a fully functional form instantly.
+> AI-powered form builder — describe a form in plain language, get a fully functional form instantly.
 
-FormForce AI is a full-stack PHP/Laravel web application where users describe a form in natural language (e.g. "Create a job application form with name, email, experience level, and a cover letter") and Google Gemini AI generates the complete form schema in real time. Forms are instantly shareable via a unique public URL, and all submissions are collected and manageable through a personal dashboard.
+**FormForce AI** is a full-stack PHP/Laravel web application where users describe a form in natural language (e.g. *"Create a job application form with name, email, experience level, and a cover letter"*) and Google Gemini AI generates the complete form schema in real time. Forms are instantly shareable via a unique public URL, and all submissions are collected and manageable through a personal dashboard.
 
-Features
+🔗 [Live Demo](https://your-app.railway.app) &nbsp;|&nbsp; 📁 [GitHub](https://github.com/your-username/formforce)
 
-🧠 AI Form Generation — Describe your form in plain English; Gemini 2.0 Flash returns a structured JSON schema with typed fields
-💬 Multi-turn Conversation — Refine and iterate on your form through a chat interface; the AI remembers context across the session
-👁️ Live Form Preview — Form fields are rendered in real time on the right panel as the AI responds
-🔗 Shareable Public Links — Every saved form gets a unique /f/{slug} URL accessible to anyone without login
-📊 Submissions Dashboard — View, manage, and track all form responses in a personal dashboard
-🔒 Authentication — Secure user registration, login, and logout via Laravel Breeze
-⚡ Rate Limiting — AI endpoint is protected (10 requests/minute per user) to prevent abuse and stay within API quotas
-🗑️ Soft Deletes — Forms are soft-deleted to keep data recoverable
-✅ Dynamic Validation — Public form submissions are validated server-side against the form's own schema at runtime
+---
 
+## Tech Stack
 
-AI Concepts Applied
+![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?style=flat&logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=flat&logo=laravel&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)
+![Gemini AI](https://img.shields.io/badge/Google-Gemini_2.0_Flash-4285F4?style=flat&logo=google&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
+![Railway](https://img.shields.io/badge/Deployed-Railway-0B0D0E?style=flat&logo=railway&logoColor=white)
+
+---
+
+## Features
+
+- 🧠 **AI Form Generation** — Describe your form in plain English; Gemini 2.0 Flash returns a structured JSON schema with typed fields
+- 💬 **Multi-turn Conversation** — Refine and iterate on your form through a chat interface; the AI remembers context across the session
+- 👁️ **Live Form Preview** — Form fields are rendered in real time on the right panel as the AI responds
+- 🔗 **Shareable Public Links** — Every saved form gets a unique `/f/{slug}` URL accessible to anyone without login
+- 📊 **Submissions Dashboard** — View, manage, and track all form responses in a personal dashboard
+- 🔒 **Authentication** — Secure user registration, login, and logout via Laravel Breeze
+- ⚡ **Rate Limiting** — AI endpoint is protected (10 requests/minute per user) to prevent abuse and stay within API quotas
+- 🗑️ **Soft Deletes** — Forms are soft-deleted to keep data recoverable
+- ✅ **Dynamic Validation** — Public form submissions are validated server-side against the form's own schema at runtime
+
+---
+
+## AI Concepts Applied
+
 This project was built to demonstrate practical, applied AI engineering — not just API calls.
-ConceptImplementationPrompt EngineeringA carefully designed system prompt instructs Gemini to return only valid JSON in a strict schema — no markdown, no explanation, no deviationStructured JSON OutputThe model output is constrained to a typed field schema (text, email, select, radio, etc.) that is parsed and rendered directly into HTMLConversation Context ManagementThe full chat history is stored in the PHP session and injected into every subsequent API call, enabling multi-turn refinementRate Limiting & GuardrailsLaravel's rate limiter guards the AI endpoint; error handling catches malformed JSON and API failures gracefullyDynamic Validation from AI OutputThe form schema returned by the AI drives server-side validation rules at submission time — the AI's required flags become Laravel validation rules
 
-How It Works
+| Concept | Implementation |
+|---|---|
+| **Prompt Engineering** | A carefully designed system prompt instructs Gemini to return *only* valid JSON in a strict schema — no markdown, no explanation, no deviation |
+| **Structured JSON Output** | The model output is constrained to a typed field schema (`text`, `email`, `select`, `radio`, etc.) that is parsed and rendered directly into HTML |
+| **Conversation Context Management** | The full chat history is stored in the PHP session and injected into every subsequent API call, enabling multi-turn refinement |
+| **Rate Limiting & Guardrails** | Laravel's rate limiter guards the AI endpoint; error handling catches malformed JSON and API failures gracefully |
+| **Dynamic Validation from AI Output** | The form schema returned by the AI drives server-side validation rules at submission time — the AI's `required` flags become Laravel validation rules |
+
+---
+
+## How It Works
+
+```
 User types: "Create a contact form with name, email, and message"
         ↓
 Laravel sends prompt + chat history → Gemini 2.0 Flash API
@@ -41,11 +69,19 @@ Laravel parses JSON → renders live HTML preview
 User saves → form gets a unique slug → shareable at /f/{slug}
         ↓
 Anyone fills the form → submission stored in MySQL → visible in dashboard
+```
 
-Supported Field Types
-text · email · textarea · select · checkbox · radio · number · date
+---
 
-Project Structure
+## Supported Field Types
+
+`text` · `email` · `textarea` · `select` · `checkbox` · `radio` · `number` · `date`
+
+---
+
+## Project Structure
+
+```
 app/
 ├── Http/Controllers/
 │   ├── FormBuilderController.php   # AI chat + form generation + save
@@ -66,18 +102,24 @@ resources/views/
 └── public/
     ├── form.blade.php              # Public-facing form (no auth required)
     └── thank-you.blade.php         # Post-submission confirmation
+```
 
-Local Setup
-Requirements
+---
 
-PHP 8.2+
-Composer
-MySQL 8.0+
-Node.js & npm
-A free Google Gemini API Key
+## Local Setup
 
-Installation
-bash# 1. Clone the repository
+### Requirements
+
+- PHP 8.2+
+- Composer
+- MySQL 8.0+
+- Node.js & npm
+- A free [Google Gemini API Key](https://aistudio.google.com/app/apikey)
+
+### Installation
+
+```bash
+# 1. Clone the repository
 git clone https://github.com/your-username/formforce.git
 cd formforce
 
@@ -106,10 +148,16 @@ php artisan migrate
 
 # 9. Start the development server
 php artisan serve
-Visit http://localhost:8000 — register an account and start building forms.
+```
 
-Environment Variables
-envAPP_NAME=FormForceAI
+Visit `http://localhost:8000` — register an account and start building forms.
+
+---
+
+## Environment Variables
+
+```env
+APP_NAME=FormForceAI
 APP_ENV=local
 APP_KEY=
 APP_DEBUG=true
@@ -123,23 +171,34 @@ DB_USERNAME=formforce_user
 DB_PASSWORD=secret
 
 GEMINI_API_KEY=your_gemini_api_key_here
+```
 
-Screenshots
+---
 
-(Add screenshots here)
+## Screenshots
 
-Form Builder (AI Chat + Live Preview)DashboardPublic FormShow ImageShow ImageShow Image
+> *(Add screenshots here)*
 
-Deployment (Railway)
+| Form Builder (AI Chat + Live Preview) | Dashboard | Public Form |
+|---|---|---|
+| ![Builder](screenshot-builder.png) | ![Dashboard](screenshot-dashboard.png) | ![Public](screenshot-public.png) |
 
-Push to GitHub (ensure .env is in .gitignore)
-Create a new project on Railway from the GitHub repo
-Add a MySQL plugin and copy the connection variables
-Set all environment variables in the Railway dashboard
-Run migrations via the Railway shell: php artisan migrate --force
+---
 
+## Deployment (Railway)
 
-About This Project
+1. Push to GitHub (ensure `.env` is in `.gitignore`)
+2. Create a new project on [Railway](https://railway.app) from the GitHub repo
+3. Add a **MySQL** plugin and copy the connection variables
+4. Set all environment variables in the Railway dashboard
+5. Run migrations via the Railway shell: `php artisan migrate --force`
+
+---
+
+## About This Project
+
 FormForce AI was built as a personal project to explore applied AI engineering with PHP — specifically prompt engineering, structured AI output, and context-aware multi-turn conversations. It demonstrates how LLMs can be integrated into production-grade web applications as functional, constrained components rather than open-ended chat tools.
 
-Built with PHP 8.2 · Laravel 11 · Google Gemini 2.0 Flash · MySQL · Tailwind CSS
+---
+
+*Built with PHP 8.2 · Laravel 11 · Google Gemini 2.0 Flash · MySQL · Tailwind CSS*
