@@ -13,7 +13,7 @@ Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
     }
-    return redirect()->route('register');
+    return redirect()->route('login');
 });
 
 // Google OAuth routes
