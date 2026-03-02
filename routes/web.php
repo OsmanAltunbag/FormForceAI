@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormBuilderController;
 use App\Http\Controllers\FormController;
@@ -15,10 +14,6 @@ Route::get('/', function () {
     }
     return redirect()->route('login');
 });
-
-// Google OAuth routes
-Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
-Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 // Public form routes (no auth required)
 Route::get('/f/{slug}', [PublicFormController::class, 'show'])->name('public.forms.show');
