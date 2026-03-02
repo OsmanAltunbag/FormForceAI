@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+// ⬇️ EKLEMEN GEREKEN KRİTİK SATIR BURASI ⬇️
+use Illuminate\Support\Facades\URL; 
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,8 +28,9 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
         });
 
+        // Render ve diğer Load Balancer kullanan platformlarda HTTPS zorunluluğu
         if (config('app.env') === 'production' || $this->app->environment('production')) {
-        URL::forceScheme('https');
-    }
+            URL::forceScheme('https');
+        }
     }
 }
