@@ -25,5 +25,9 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('ai-requests', function ($request) {
             return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
         });
+
+        if (config('app.env') === 'production' || $this->app->environment('production')) {
+        URL::forceScheme('https');
+    }
     }
 }
