@@ -1,59 +1,145 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+FormForce AI 🤖
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+AI-powered form builder — describe a form in plain language, get a fully functional form instantly.
 
-## About Laravel
+FormForce AI is a full-stack PHP/Laravel web application where users describe a form in natural language (e.g. "Create a job application form with name, email, experience level, and a cover letter") and Google Gemini AI generates the complete form schema in real time. Forms are instantly shareable via a unique public URL, and all submissions are collected and manageable through a personal dashboard.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+🧠 AI Form Generation — Describe your form in plain English; Gemini 2.0 Flash returns a structured JSON schema with typed fields
+💬 Multi-turn Conversation — Refine and iterate on your form through a chat interface; the AI remembers context across the session
+👁️ Live Form Preview — Form fields are rendered in real time on the right panel as the AI responds
+🔗 Shareable Public Links — Every saved form gets a unique /f/{slug} URL accessible to anyone without login
+📊 Submissions Dashboard — View, manage, and track all form responses in a personal dashboard
+🔒 Authentication — Secure user registration, login, and logout via Laravel Breeze
+⚡ Rate Limiting — AI endpoint is protected (10 requests/minute per user) to prevent abuse and stay within API quotas
+🗑️ Soft Deletes — Forms are soft-deleted to keep data recoverable
+✅ Dynamic Validation — Public form submissions are validated server-side against the form's own schema at runtime
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+AI Concepts Applied
+This project was built to demonstrate practical, applied AI engineering — not just API calls.
+ConceptImplementationPrompt EngineeringA carefully designed system prompt instructs Gemini to return only valid JSON in a strict schema — no markdown, no explanation, no deviationStructured JSON OutputThe model output is constrained to a typed field schema (text, email, select, radio, etc.) that is parsed and rendered directly into HTMLConversation Context ManagementThe full chat history is stored in the PHP session and injected into every subsequent API call, enabling multi-turn refinementRate Limiting & GuardrailsLaravel's rate limiter guards the AI endpoint; error handling catches malformed JSON and API failures gracefullyDynamic Validation from AI OutputThe form schema returned by the AI drives server-side validation rules at submission time — the AI's required flags become Laravel validation rules
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+How It Works
+User types: "Create a contact form with name, email, and message"
+        ↓
+Laravel sends prompt + chat history → Gemini 2.0 Flash API
+        ↓
+Gemini returns structured JSON:
+{
+  "title": "Contact Form",
+  "fields": [
+    { "label": "Name",    "type": "text",     "name": "name",    "required": true },
+    { "label": "Email",   "type": "email",    "name": "email",   "required": true },
+    { "label": "Message", "type": "textarea", "name": "message", "required": true }
+  ]
+}
+        ↓
+Laravel parses JSON → renders live HTML preview
+        ↓
+User saves → form gets a unique slug → shareable at /f/{slug}
+        ↓
+Anyone fills the form → submission stored in MySQL → visible in dashboard
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Supported Field Types
+text · email · textarea · select · checkbox · radio · number · date
 
-## Laravel Sponsors
+Project Structure
+app/
+├── Http/Controllers/
+│   ├── FormBuilderController.php   # AI chat + form generation + save
+│   ├── FormController.php          # Toggle active, soft delete
+│   ├── DashboardController.php     # User dashboard with form list
+│   ├── SubmissionController.php    # View responses per form
+│   └── PublicFormController.php    # Public form page + submit handler
+├── Models/
+│   ├── Form.php                    # Form model (SoftDeletes, slug generation)
+│   └── Submission.php              # Submission model (JSON cast)
+└── Services/
+    └── GeminiService.php           # Google Gemini API integration
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+resources/views/
+├── builder/index.blade.php         # Two-panel: AI chat + live form preview
+├── dashboard/index.blade.php       # Form management table
+├── submissions/index.blade.php     # Dynamic submissions viewer
+└── public/
+    ├── form.blade.php              # Public-facing form (no auth required)
+    └── thank-you.blade.php         # Post-submission confirmation
 
-### Premium Partners
+Local Setup
+Requirements
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+PHP 8.2+
+Composer
+MySQL 8.0+
+Node.js & npm
+A free Google Gemini API Key
 
-## Contributing
+Installation
+bash# 1. Clone the repository
+git clone https://github.com/your-username/formforce.git
+cd formforce
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 2. Install PHP dependencies
+composer install
 
-## Code of Conduct
+# 3. Install and build frontend assets
+npm install && npm run build
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 4. Copy environment file
+cp .env.example .env
 
-## Security Vulnerabilities
+# 5. Generate application key
+php artisan key:generate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 6. Configure your database in .env
+# DB_DATABASE=formforce_db
+# DB_USERNAME=your_user
+# DB_PASSWORD=your_password
 
-## License
+# 7. Add your Gemini API key in .env
+# GEMINI_API_KEY=your_gemini_api_key_here
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 8. Run migrations
+php artisan migrate
+
+# 9. Start the development server
+php artisan serve
+Visit http://localhost:8000 — register an account and start building forms.
+
+Environment Variables
+envAPP_NAME=FormForceAI
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=formforce_db
+DB_USERNAME=formforce_user
+DB_PASSWORD=secret
+
+GEMINI_API_KEY=your_gemini_api_key_here
+
+Screenshots
+
+(Add screenshots here)
+
+Form Builder (AI Chat + Live Preview)DashboardPublic FormShow ImageShow ImageShow Image
+
+Deployment (Railway)
+
+Push to GitHub (ensure .env is in .gitignore)
+Create a new project on Railway from the GitHub repo
+Add a MySQL plugin and copy the connection variables
+Set all environment variables in the Railway dashboard
+Run migrations via the Railway shell: php artisan migrate --force
+
+
+About This Project
+FormForce AI was built as a personal project to explore applied AI engineering with PHP — specifically prompt engineering, structured AI output, and context-aware multi-turn conversations. It demonstrates how LLMs can be integrated into production-grade web applications as functional, constrained components rather than open-ended chat tools.
+
+Built with PHP 8.2 · Laravel 11 · Google Gemini 2.0 Flash · MySQL · Tailwind CSS
